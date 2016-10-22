@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
+#define BOOST_TEST_MODULE MyTest
+#include <boost/test/unit_test.hpp>
 
-int main(int argc, char **argv)
+BOOST_AUTO_TEST_CASE(PassTest)
 {
-    std::cout << "Teste!" << std::endl;
-    return 0;
+    BOOST_CHECK_EQUAL(2, 2);
 }
