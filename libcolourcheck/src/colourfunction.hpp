@@ -28,7 +28,8 @@ namespace colourcheck
 class colourfunction
 {
 public:
-    typedef std::tuple<float, float, float, float> value_type;
+    typedef std::tuple<double, double, double, double> value_type;
+    typedef std::tuple<double, double, double> colour_type; //TODO - create a class indicating the colour space
 
     colourfunction(std::string filename)
         : _filename(filename) {};
@@ -39,13 +40,23 @@ public:
     {
         return _data[index];
     }
-    colourfunction::value_type const get(float wavelength);
+
+    colourfunction::value_type const get(double wavelength);
+
+    colourfunction::colour_type const get_colourXYZ(
+        const std::vector<std::tuple<double, double>> &input_vector);
+
+    colourfunction::colour_type const to_xyz(
+        const colourfunction::colour_type &colourXYZ);
+
+    colourfunction::colour_type const get_colour_xyz(
+        const std::vector<std::tuple<double, double>> &input_vector);
 
 private:
 
-    colourfunction::value_type mean(float value,
-            colourfunction::value_type const &v1,
-            colourfunction::value_type const &v2);
+    colourfunction::value_type mean(double value,
+                                    colourfunction::value_type const &v1,
+                                    colourfunction::value_type const &v2);
 
     std::string _filename;
     std::vector<colourfunction::value_type> _data;

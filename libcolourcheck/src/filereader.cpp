@@ -41,7 +41,7 @@ void spectrometer::parse_data()
     ifstream ints_file(_intensities_file);
 
     while (ints_file >> line) {
-        vector<float> ints_row;
+        vector<double> ints_row;
         for (auto v : line.get_data()) {
             ints_row.push_back(stod(v));
         }

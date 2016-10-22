@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define BOOST_TEST_MODULE ColourFunctionTest
+#define BOOST_TEST_MODULE ColourFcnTest
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 #include "colourfunction.hpp"
@@ -23,10 +23,12 @@
 using namespace std;
 using namespace colourcheck;
 
-#define REQUIRE_CLOSE(v1,v2) BOOST_REQUIRE_CLOSE(v1,v2,0.00001)
+#define REQUIRE_CLOSE(v1,v2) BOOST_REQUIRE_CLOSE(v1,v2,0.0001)
 
-struct F {
-    F() : cf("sample.csv")
+class ColourFcnTest
+{
+public:
+    ColourFcnTest() : cf("sample.csv")
     {
         createSampleFile();
     }
@@ -41,118 +43,180 @@ struct F {
         cf.read();
     }
 
-    ~F()
+    ~ColourFcnTest()
     {
         remove("sample.csv");
     }
     colourfunction cf;
 };
 
-BOOST_FIXTURE_TEST_CASE(read_file, F)
+BOOST_FIXTURE_TEST_CASE(read_file, ColourFcnTest)
 {
     colourfunction::value_type v;
 
     v = cf[0];
-    REQUIRE_CLOSE(430.0f, get<0>(v));
-    REQUIRE_CLOSE(0.1f, get<1>(v));
-    REQUIRE_CLOSE(0.20f, get<2>(v));
-    REQUIRE_CLOSE(0.30f, get<3>(v));
+    REQUIRE_CLOSE(430.0, get<0>(v));
+    REQUIRE_CLOSE(0.1, get<1>(v));
+    REQUIRE_CLOSE(0.20, get<2>(v));
+    REQUIRE_CLOSE(0.30, get<3>(v));
 
     v = cf[1];
-    REQUIRE_CLOSE(435.0f, get<0>(v));
-    REQUIRE_CLOSE(0.2f, get<1>(v));
-    REQUIRE_CLOSE(0.40f, get<2>(v));
-    REQUIRE_CLOSE(0.60f, get<3>(v));
+    REQUIRE_CLOSE(435.0, get<0>(v));
+    REQUIRE_CLOSE(0.2, get<1>(v));
+    REQUIRE_CLOSE(0.40, get<2>(v));
+    REQUIRE_CLOSE(0.60, get<3>(v));
 
     v = cf[2];
-    REQUIRE_CLOSE(440.0f, get<0>(v));
-    REQUIRE_CLOSE(0.40f, get<1>(v));
-    REQUIRE_CLOSE(0.16f, get<2>(v));
-    REQUIRE_CLOSE(2.40f, get<3>(v));
+    REQUIRE_CLOSE(440.0, get<0>(v));
+    REQUIRE_CLOSE(0.40, get<1>(v));
+    REQUIRE_CLOSE(0.16, get<2>(v));
+    REQUIRE_CLOSE(2.40, get<3>(v));
 }
 
-BOOST_FIXTURE_TEST_CASE(get_exact_wavelength, F)
+BOOST_FIXTURE_TEST_CASE(get_exact_wavelength, ColourFcnTest)
 {
     colourfunction::value_type v;
 
-    v = cf.get(430.0f);
-    REQUIRE_CLOSE(430.0f, get<0>(v));
-    REQUIRE_CLOSE(0.1f, get<1>(v));
-    REQUIRE_CLOSE(0.20f, get<2>(v));
-    REQUIRE_CLOSE(0.30f, get<3>(v));
+    v = cf.get(430.0);
+    REQUIRE_CLOSE(430.0, get<0>(v));
+    REQUIRE_CLOSE(0.1, get<1>(v));
+    REQUIRE_CLOSE(0.20, get<2>(v));
+    REQUIRE_CLOSE(0.30, get<3>(v));
 
-    v = cf.get(435.0f);
-    REQUIRE_CLOSE(435.0f, get<0>(v));
-    REQUIRE_CLOSE(0.2f, get<1>(v));
-    REQUIRE_CLOSE(0.40f, get<2>(v));
-    REQUIRE_CLOSE(0.60f, get<3>(v));
+    v = cf.get(435.0);
+    REQUIRE_CLOSE(435.0, get<0>(v));
+    REQUIRE_CLOSE(0.2, get<1>(v));
+    REQUIRE_CLOSE(0.40, get<2>(v));
+    REQUIRE_CLOSE(0.60, get<3>(v));
 
-    v = cf.get(440.0f);
-    REQUIRE_CLOSE(440.0f, get<0>(v));
-    REQUIRE_CLOSE(0.40f, get<1>(v));
-    REQUIRE_CLOSE(0.16f, get<2>(v));
-    REQUIRE_CLOSE(2.40f, get<3>(v));
+    v = cf.get(440.0);
+    REQUIRE_CLOSE(440.0, get<0>(v));
+    REQUIRE_CLOSE(0.40, get<1>(v));
+    REQUIRE_CLOSE(0.16, get<2>(v));
+    REQUIRE_CLOSE(2.40, get<3>(v));
 }
 
-BOOST_FIXTURE_TEST_CASE(build_new_wavelength_middle, F)
+BOOST_FIXTURE_TEST_CASE(build_new_wavelength_middle, ColourFcnTest)
 {
     colourfunction::value_type v;
 
-    v = cf.get(432.5f);
-    REQUIRE_CLOSE(432.5f, get<0>(v));
-    REQUIRE_CLOSE(0.15f, get<1>(v));
-    REQUIRE_CLOSE(0.30f, get<2>(v));
-    REQUIRE_CLOSE(0.45f, get<3>(v));
+    v = cf.get(432.5);
+    REQUIRE_CLOSE(432.5, get<0>(v));
+    REQUIRE_CLOSE(0.15, get<1>(v));
+    REQUIRE_CLOSE(0.30, get<2>(v));
+    REQUIRE_CLOSE(0.45, get<3>(v));
 
     v = cf[2];
-    REQUIRE_CLOSE(435.0f, get<0>(v));
-    REQUIRE_CLOSE(0.2f, get<1>(v));
-    REQUIRE_CLOSE(0.40f, get<2>(v));
-    REQUIRE_CLOSE(0.60f, get<3>(v));
+    REQUIRE_CLOSE(435.0, get<0>(v));
+    REQUIRE_CLOSE(0.2, get<1>(v));
+    REQUIRE_CLOSE(0.40, get<2>(v));
+    REQUIRE_CLOSE(0.60, get<3>(v));
 
     v = cf[1];
-    REQUIRE_CLOSE(432.5f, get<0>(v));
-    REQUIRE_CLOSE(0.15f, get<1>(v));
-    REQUIRE_CLOSE(0.30f, get<2>(v));
-    REQUIRE_CLOSE(0.45f, get<3>(v));
+    REQUIRE_CLOSE(432.5, get<0>(v));
+    REQUIRE_CLOSE(0.15, get<1>(v));
+    REQUIRE_CLOSE(0.30, get<2>(v));
+    REQUIRE_CLOSE(0.45, get<3>(v));
 }
 
-BOOST_FIXTURE_TEST_CASE(build_new_wavelength_any, F)
+BOOST_FIXTURE_TEST_CASE(build_new_wavelength_any, ColourFcnTest)
 {
     colourfunction::value_type v;
 
-    v = cf.get(431.25f);
-    REQUIRE_CLOSE(431.25f, get<0>(v));
-    REQUIRE_CLOSE(0.125f, get<1>(v));
-    REQUIRE_CLOSE(0.25f, get<2>(v));
-    REQUIRE_CLOSE(0.375f, get<3>(v));
+    v = cf.get(431.25);
+    REQUIRE_CLOSE(431.25, get<0>(v));
+    REQUIRE_CLOSE(0.125, get<1>(v));
+    REQUIRE_CLOSE(0.25, get<2>(v));
+    REQUIRE_CLOSE(0.375, get<3>(v));
 
     v = cf[2];
-    REQUIRE_CLOSE(435.0f, get<0>(v));
-    REQUIRE_CLOSE(0.2f, get<1>(v));
-    REQUIRE_CLOSE(0.40f, get<2>(v));
-    REQUIRE_CLOSE(0.60f, get<3>(v));
+    REQUIRE_CLOSE(435.0, get<0>(v));
+    REQUIRE_CLOSE(0.2, get<1>(v));
+    REQUIRE_CLOSE(0.40, get<2>(v));
+    REQUIRE_CLOSE(0.60, get<3>(v));
 
     v = cf[1];
-    REQUIRE_CLOSE(431.25f, get<0>(v));
-    REQUIRE_CLOSE(0.125f, get<1>(v));
-    REQUIRE_CLOSE(0.25f, get<2>(v));
-    REQUIRE_CLOSE(0.375f, get<3>(v));
+    REQUIRE_CLOSE(431.25, get<0>(v));
+    REQUIRE_CLOSE(0.125, get<1>(v));
+    REQUIRE_CLOSE(0.25, get<2>(v));
+    REQUIRE_CLOSE(0.375, get<3>(v));
 }
 
-BOOST_FIXTURE_TEST_CASE(check_boundaries, F)
-{ 
-   colourfunction::value_type v;
+BOOST_FIXTURE_TEST_CASE(check_boundaries, ColourFcnTest)
+{
+    colourfunction::value_type v;
 
-    v = cf.get(0.0f);
-    REQUIRE_CLOSE(0.0f, get<0>(v));
-    REQUIRE_CLOSE(0.0f, get<1>(v));
-    REQUIRE_CLOSE(0.0f, get<2>(v));
-    REQUIRE_CLOSE(0.0f, get<3>(v));
+    v = cf.get(0.0);
+    REQUIRE_CLOSE(0.0, get<0>(v));
+    REQUIRE_CLOSE(0.0, get<1>(v));
+    REQUIRE_CLOSE(0.0, get<2>(v));
+    REQUIRE_CLOSE(0.0, get<3>(v));
 
-    v = cf.get(1000.0f);
-    REQUIRE_CLOSE(0.0f, get<0>(v));
-    REQUIRE_CLOSE(0.0f, get<1>(v));
-    REQUIRE_CLOSE(0.0f, get<2>(v));
-    REQUIRE_CLOSE(0.0f, get<3>(v));
+    v = cf.get(1000.0);
+    REQUIRE_CLOSE(0.0, get<0>(v));
+    REQUIRE_CLOSE(0.0, get<1>(v));
+    REQUIRE_CLOSE(0.0, get<2>(v));
+    REQUIRE_CLOSE(0.0, get<3>(v));
 }
+
+BOOST_FIXTURE_TEST_CASE(single_wave, ColourFcnTest)
+{
+    vector<tuple<double, double>> input;
+    input.push_back(make_tuple(430.0, 1.0));
+
+    auto v = cf.get_colourXYZ(input);
+    REQUIRE_CLOSE(0.10, get<0>(v));
+    REQUIRE_CLOSE(0.20, get<1>(v));
+    REQUIRE_CLOSE(0.30, get<2>(v));
+}
+
+BOOST_FIXTURE_TEST_CASE(known_waves, ColourFcnTest)
+{
+    vector<tuple<double, double>> input;
+    input.push_back(make_tuple(430.0, 1.0));
+    input.push_back(make_tuple(435.0, 1.0));
+    input.push_back(make_tuple(440.0, 1.0));
+
+    auto v = cf.get_colourXYZ(input);
+    REQUIRE_CLOSE(0.70, get<0>(v));
+    REQUIRE_CLOSE(0.76, get<1>(v));
+    REQUIRE_CLOSE(3.30, get<2>(v));
+}
+
+BOOST_FIXTURE_TEST_CASE(waves_mixed, ColourFcnTest)
+{
+    vector<tuple<double, double>> input;
+    input.push_back(make_tuple(430.0, 0.5));
+    input.push_back(make_tuple(432.5, 0.2));
+    input.push_back(make_tuple(440.0, 0.9));
+
+    auto v = cf.get_colourXYZ(input);
+    REQUIRE_CLOSE(0.440, get<0>(v));
+    REQUIRE_CLOSE(0.304, get<1>(v));
+    REQUIRE_CLOSE(2.400, get<2>(v));
+}
+
+BOOST_FIXTURE_TEST_CASE(from_XYZ_to_xyz, ColourFcnTest)
+{
+    colourfunction::colour_type input = make_tuple(2.0, 4.0, 10.0);
+
+    auto v = cf.to_xyz(input);
+    REQUIRE_CLOSE(0.125, get<0>(v));
+    REQUIRE_CLOSE(0.250, get<1>(v));
+    REQUIRE_CLOSE(0.625, get<2>(v));
+}
+
+BOOST_FIXTURE_TEST_CASE(get_xyz, ColourFcnTest)
+{
+    vector<tuple<double, double>> input;
+    input.push_back(make_tuple(430.0, 0.5));
+    input.push_back(make_tuple(432.5, 0.2));
+    input.push_back(make_tuple(440.0, 0.9));
+
+    auto v = cf.get_colour_xyz(input);
+    REQUIRE_CLOSE(0.1399491, get<0>(v));
+    REQUIRE_CLOSE(0.0966921, get<1>(v));
+    REQUIRE_CLOSE(0.7633587, get<2>(v));
+}
+
+

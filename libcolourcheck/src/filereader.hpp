@@ -60,7 +60,7 @@ std::istream &operator>>(std::istream &instr, fileline &obj);
 class spectrometer
 {
 public:
-    typedef std::vector<float> sample_vector;
+    typedef std::vector<double> sample_vector;
     typedef std::vector<spectrometer::sample_vector> matrix_type;
 
 
@@ -86,7 +86,7 @@ public:
         return _ints_data.end();
     }
 
-    float get_wave(std::size_t index)
+    double get_wave(std::size_t index)
     {
         return _wave_data[index];
     }

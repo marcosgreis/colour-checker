@@ -19,6 +19,10 @@
 #include "colourfunction.hpp"
 #include "filereader.hpp"
 
+
+#include <iostream>
+
+
 using namespace std;
 
 namespace colourcheck
@@ -38,14 +42,14 @@ void colourfunction::read()
     }
 }
 
-colourfunction::value_type colourfunction::mean(float value,
-                                colourfunction::value_type const &v1,
-                                colourfunction::value_type const &v2)
+colourfunction::value_type colourfunction::mean(double value,
+        colourfunction::value_type const &v1,
+        colourfunction::value_type const &v2)
 {
-    float factor = (value - std::get<0>(v1)) / (std::get<0>(v2) - std::get<0>(v1));
+    double factor = (value - std::get<0>(v1)) / (std::get<0>(v2) - std::get<0>(v1));
 
-    auto adjust = [factor](float f1, float f2) {
-        return f1 * (1-factor) + f2 * (factor);
+    auto adjust = [factor](double f1, double f2) {
+        return f1 * (1 - factor) + f2 * (factor);
     };
 
     return make_tuple(adjust(std::get<0>(v1), std::get<0>(v2)),
@@ -54,13 +58,13 @@ colourfunction::value_type colourfunction::mean(float value,
                       adjust(std::get<3>(v1), std::get<3>(v2)));
 }
 
-colourfunction::value_type const colourfunction::get(float wavelength)
+colourfunction::value_type const colourfunction::get(double wavelength)
 {
-    float last_value;
+    double last_value;
     last_value = std::get<0>(*_data.begin());
     for (auto it = _data.begin(); it != _data.end(); ++it) {
 
-        float value = std::get<0>(*it);
+        double value = std::get<0>(*it);
         if (wavelength == value) {
             return *it;
         }
@@ -71,7 +75,45 @@ colourfunction::value_type const colourfunction::get(float wavelength)
         }
 
     }
-    return make_tuple(0.0f, 0.0f, 0.0f, 0.0f);
+    return make_tuple(0.0, 0.0, 0.0, 0.0);
+}
+
+colourfunction::colour_type const colourfunction::get_colourXYZ(
+    const vector<tuple<double, double>> &input_vector)
+{
+    colourfunction::colour_type output = make_tuple(0.0, 0.0, 0.0);
+
+    for (auto input : input_vector) {
+        double wavelength = std::get<0>(input);
+        double intensity = std::get<1>(input);
+
+        auto v = get(wavelength);
+
+        std::get<0>(output) += std::get<1>(v) * intensity;
+        std::get<1>(output) += std::get<2>(v) * intensity;
+        std::get<2>(output) += std::get<3>(v) * intensity;
+    }
+
+    return output;
+}
+
+colourfunction::colour_type const colourfunction::to_xyz(
+    const colourfunction::colour_type &colourXYZ)
+{
+    double sum = std::get<0>(colourXYZ) +
+                std::get<1>(colourXYZ) +
+                std::get<2>(colourXYZ);
+
+    return make_tuple(std::get<0>(colourXYZ) / sum,
+                      std::get<1>(colourXYZ) / sum,
+                      std::get<2>(colourXYZ) / sum);
+}
+
+
+colourfunction::colour_type const colourfunction::get_colour_xyz(
+    const std::vector<std::tuple<double, double>> &input_vector)
+{
+    return to_xyz(get_colourXYZ(input_vector));
 }
 
 
