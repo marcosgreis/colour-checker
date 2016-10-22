@@ -1,0 +1,14 @@
+This is a project to solve the VanHackathon challenge from Thalmic Labs.
+
+The activities needed to complete this task are:
+
+Act#0: Create basic structure
+Act#1: Read input files
+Act#2: Parse data
+Act#3: Create colour matching function
+Act#4: Calculate light colour
+Act#5: Create GUI
+Act#6: Integrate with libcolourcheck
+Act#7: Show data
+Act#8: Determine light stability
+Act#9: Show stability in GUI
