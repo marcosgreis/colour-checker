@@ -16,18 +16,13 @@
  */
 
 #include <fstream>
-#include "filereader.hpp"
+#include "spectrometer.hpp"
+#include "fileline.hpp"
 
 using namespace std;
 
 namespace colourcheck
 {
-
-istream &operator>>(istream &instr, fileline &obj)
-{
-    obj.read_next_line(instr);
-    return instr;
-}
 
 void spectrometer::parse_data()
 {
@@ -35,7 +30,9 @@ void spectrometer::parse_data()
 
     fileline line;
     while (wave_file >> line) {
-        _wave_data.push_back(stod(line[1]));
+        if (line.size() > 1) {
+            _wave_data.push_back(stod(line[1]));
+        }
     }
 
     ifstream ints_file(_intensities_file);

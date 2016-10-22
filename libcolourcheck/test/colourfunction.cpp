@@ -17,6 +17,7 @@
 
 #define BOOST_TEST_MODULE ColourFcnTest
 #include <boost/test/unit_test.hpp>
+#include <boost/mpl/vector.hpp>
 #include <fstream>
 #include "colourfunction.hpp"
 
@@ -33,7 +34,7 @@ public:
         createSampleFile();
     }
 
-    void createSampleFile()
+    virtual void createSampleFile()
     {
         ofstream file("sample.csv");
         file << "430,0.1,0.20,0.30" << endl
@@ -50,23 +51,50 @@ public:
     colourfunction cf;
 };
 
-BOOST_FIXTURE_TEST_CASE(read_file, ColourFcnTest)
+class ColourFcnTestComment : public ColourFcnTest
+{
+public:
+    ColourFcnTestComment()
+    {
+        createSampleFile();
+    }
+
+    virtual void createSampleFile()
+    {
+        ofstream file("sample.csv");
+        file << "# Wl, X, Y, Z" << endl
+             << "430,0.1,0.20,0.30" << endl
+             << "435,0.2,0.40,0.60" << endl
+             << "440,0.4,0.16,2.40" << endl;
+
+        cf.read();
+    }
+
+    ~ColourFcnTestComment()
+    {
+        remove("sample.csv");
+    }
+};
+
+typedef boost::mpl::vector<ColourFcnTest, ColourFcnTestComment> Fixtures;
+
+BOOST_FIXTURE_TEST_CASE_TEMPLATE(read_file, T, Fixtures, T)
 {
     colourfunction::value_type v;
 
-    v = cf[0];
+    v = T::cf[0];
     REQUIRE_CLOSE(430.0, get<0>(v));
     REQUIRE_CLOSE(0.1, get<1>(v));
     REQUIRE_CLOSE(0.20, get<2>(v));
     REQUIRE_CLOSE(0.30, get<3>(v));
 
-    v = cf[1];
+    v = T::cf[1];
     REQUIRE_CLOSE(435.0, get<0>(v));
     REQUIRE_CLOSE(0.2, get<1>(v));
     REQUIRE_CLOSE(0.40, get<2>(v));
     REQUIRE_CLOSE(0.60, get<3>(v));
 
-    v = cf[2];
+    v = T::cf[2];
     REQUIRE_CLOSE(440.0, get<0>(v));
     REQUIRE_CLOSE(0.40, get<1>(v));
     REQUIRE_CLOSE(0.16, get<2>(v));
@@ -218,5 +246,4 @@ BOOST_FIXTURE_TEST_CASE(get_xyz, ColourFcnTest)
     REQUIRE_CLOSE(0.0966921, get<1>(v));
     REQUIRE_CLOSE(0.7633587, get<2>(v));
 }
-
 

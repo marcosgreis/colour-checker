@@ -35,6 +35,10 @@ public:
         : _filename(filename) {};
 
     void read();
+    bool is_ready()
+    {
+        return _data.size() > 0 ? true : false;
+    }
 
     colourfunction::value_type const &operator[](std::size_t index) const
     {

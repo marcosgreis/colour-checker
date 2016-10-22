@@ -17,10 +17,7 @@
 
 #include <fstream>
 #include "colourfunction.hpp"
-#include "filereader.hpp"
-
-
-#include <iostream>
+#include "fileline.hpp"
 
 
 using namespace std;
@@ -34,11 +31,13 @@ void colourfunction::read()
     fileline line;
 
     while (file >> line) {
-        auto parse = [line](size_t i) {
-            return stod(line[i]);
-        };
-        auto content = make_tuple(parse(0), parse(1), parse(2), parse(3));
-        _data.push_back(content);
+        if (line.size() > 3) {
+            auto parse = [line](size_t i) {
+                return stod(line[i]);
+            };
+            auto content = make_tuple(parse(0), parse(1), parse(2), parse(3));
+            _data.push_back(content);
+        }
     }
 }
 
@@ -101,8 +100,8 @@ colourfunction::colour_type const colourfunction::to_xyz(
     const colourfunction::colour_type &colourXYZ)
 {
     double sum = std::get<0>(colourXYZ) +
-                std::get<1>(colourXYZ) +
-                std::get<2>(colourXYZ);
+                 std::get<1>(colourXYZ) +
+                 std::get<2>(colourXYZ);
 
     return make_tuple(std::get<0>(colourXYZ) / sum,
                       std::get<1>(colourXYZ) / sum,

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __FILEREADER_H__
-#define __FILEREADER_H__
+#ifndef __FILELINE_H__
+#define __FILELINE_H__
 
 #include <string>
 #include <vector>
@@ -39,6 +39,11 @@ public:
         return _data;
     }
 
+    fileline::value_type::size_type size() const
+    {
+        return _data.size();
+    }
+
     void read_next_line(std::istream &str)
     {
         std::string line;
@@ -46,9 +51,17 @@ public:
 
         std::stringstream lineStream(line);
         std::string value;
-
         _data.clear();
+
+        std::string::size_type hash_pos = line.find_first_of("#");
+        std::string::size_type notspace_pos = line.find_first_not_of(" ");
+        if (hash_pos != std::string::npos &&
+                hash_pos == notspace_pos) {
+            return;
+        }
+
         while (std::getline(lineStream, value, ',')) {
+
             _data.emplace_back(value);
         }
     }
@@ -57,50 +70,8 @@ private:
 };
 std::istream &operator>>(std::istream &instr, fileline &obj);
 
-class spectrometer
-{
-public:
-    typedef std::vector<double> sample_vector;
-    typedef std::vector<spectrometer::sample_vector> matrix_type;
-
-
-    spectrometer(std::string wavelenght_file, std::string intensities_file)
-        : _wavelength_file(wavelenght_file),
-          _intensities_file(intensities_file),
-          _ready(false),
-          _it_timestamp(nullptr) {};
-
-    void parse_data();
-    bool is_ready()
-    {
-        return _ready;
-    };
-
-    spectrometer::matrix_type::iterator begin() noexcept
-    {
-        return _ints_data.begin();
-    }
-
-    spectrometer::matrix_type::iterator end() noexcept
-    {
-        return _ints_data.end();
-    }
-
-    double get_wave(std::size_t index)
-    {
-        return _wave_data[index];
-    }
-
-private:
-    std::string _wavelength_file;
-    std::string _intensities_file;
-    bool _ready;
-    spectrometer::sample_vector _wave_data;
-    spectrometer::matrix_type _ints_data;
-    spectrometer::matrix_type::iterator _it_timestamp;
-};
 }
 
 
-#endif // __FILEREADER_H__
+#endif // __FILELINE_H__
 
