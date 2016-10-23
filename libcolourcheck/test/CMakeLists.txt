@@ -19,19 +19,18 @@ include_directories(${libcolourcheck_SOURCE_DIR}/src
                     ${Boost_INCLUDE_DIRS})
 
 add_definitions(-DBOOST_TEST_DYN_LINK)
-add_executable(unittest 
-               test.cpp)
 
 add_executable(colourtest
                colourfunction.cpp)
-
-target_link_libraries(unittest 
-                      colourcheck
-                      ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-
 target_link_libraries(colourtest
                       colourcheck
                       ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-
-add_test(NAME UnitTesting COMMAND unittest)
 add_test(NAME ColourFcnTest COMMAND colourtest)
+
+add_executable(avgfiltertest
+               avgfilter.cpp)
+target_link_libraries(avgfiltertest
+                      colourcheck
+                      ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+add_test(NAME AverageFilterTest COMMAND avgfiltertest)
+

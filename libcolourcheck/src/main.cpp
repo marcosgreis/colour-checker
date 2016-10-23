@@ -22,6 +22,7 @@
 #include "fileline.hpp"
 #include "spectrometer.hpp"
 #include "colourfunction.hpp"
+#include "filter.hpp"
 
 using namespace std;
 using namespace colourcheck;
@@ -55,10 +56,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-//    spectrometer s("/tmp/waves.csv", "/tmp/int.csv");
-//    spectrometer s("/tmp/wavelengths.csv", "/tmp/intensities.csv");
         spectrometer s(vm["wavelength"].as<string>(), vm["intensity"].as<string>());
-//    colourfunction cf("/tmp/ciexyz31.csv");
         colourfunction cf(vm["ciexyz"].as<string>());
         s.parse_data();
         cf.read();
@@ -128,6 +126,8 @@ private:
 
 int calculate_data(colourfunction &cf, spectrometer &s, const string &output)
 {
+    avgfilter<double> x_filter;
+    avgfilter<double> y_filter;
     csvoutput out(output);
     if (!out.is_open()) {
         cout << "Could not open output file!" << endl;
@@ -149,14 +149,16 @@ int calculate_data(colourfunction &cf, spectrometer &s, const string &output)
 
         auto v = cf.get_colour_xyz(data);
 
+        x_filter << get<0>(v);
         out.new_cell(get<0>(v));
+        y_filter << get<1>(v);
         out.new_cell(get<1>(v));
         out.new_line();
     }
 
     out.create_header("Final_x,Final_y");
-    out.new_cell(0);
-    out.new_cell(0);
+    out.new_cell(x_filter.get_value());
+    out.new_cell(y_filter.get_value());
     out.new_line();
 
     return 0;
