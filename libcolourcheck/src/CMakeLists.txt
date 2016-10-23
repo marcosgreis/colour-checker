@@ -25,3 +25,8 @@ add_library(colourcheck
 add_executable(cmdline-checker main.cpp)
 target_link_libraries(cmdline-checker
                       colourcheck ${Boost_LIBRARIES})
+
+add_custom_command(TARGET cmdline-checker POST_BUILD 
+                   COMMAND ${CMAKE_COMMAND} -E copy 
+                   "${CMAKE_CURRENT_BINARY_DIR}/cmdline-checker"
+                   "${CMAKE_BINARY_DIR}/cmdline-checker")

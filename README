@@ -1,5 +1,11 @@
 This is a project to solve the VanHackathon challenge from Thalmic Labs.
 
+Requirements:
+* CMake 3.0
+* Boost C++ Libraries 1.54 (program_options and unit_test_framework)
+
+
+
 The activities needed to complete this task are:
 
 Act#0: Create basic structure
