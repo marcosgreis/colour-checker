@@ -24,14 +24,14 @@
 
 namespace colourcheck
 {
-class spectrometer
+class Spectrometer
 {
 public:
     typedef std::vector<double> sample_vector;
-    typedef std::vector<spectrometer::sample_vector> matrix_type;
+    typedef std::vector<Spectrometer::sample_vector> matrix_type;
 
 
-    spectrometer(std::string wavelenght_file, std::string intensities_file)
+    Spectrometer(std::string wavelenght_file, std::string intensities_file)
         : _wavelength_file(wavelenght_file),
           _intensities_file(intensities_file),
           _ready(false),
@@ -43,12 +43,12 @@ public:
         return _ready;
     };
 
-    spectrometer::matrix_type::iterator begin() noexcept
+    Spectrometer::matrix_type::iterator begin() noexcept
     {
         return _ints_data.begin();
     }
 
-    spectrometer::matrix_type::iterator end() noexcept
+    Spectrometer::matrix_type::iterator end() noexcept
     {
         return _ints_data.end();
     }
@@ -62,9 +62,9 @@ private:
     std::string _wavelength_file;
     std::string _intensities_file;
     bool _ready;
-    spectrometer::sample_vector _wave_data;
-    spectrometer::matrix_type _ints_data;
-    spectrometer::matrix_type::iterator _it_timestamp;
+    Spectrometer::sample_vector _wave_data;
+    Spectrometer::matrix_type _ints_data;
+    Spectrometer::matrix_type::iterator _it_timestamp;
 };
 }
 

@@ -25,13 +25,42 @@
 namespace colourcheck
 {
 
-class colourfunction
+class Colour
+{
+public:
+    typedef std::tuple<double, double, double> value_type;
+
+    Colour(const Colour::value_type &v) :
+        _XYZ(v)
+    {};
+
+    const Colour::value_type &getXYZ() const
+    {
+        return _XYZ;
+    }
+
+    const Colour::value_type getxyz() const
+    {
+        double sum = std::get<0>(_XYZ) +
+                     std::get<1>(_XYZ) +
+                     std::get<2>(_XYZ);
+
+        return std::make_tuple(std::get<0>(_XYZ) / sum,
+                               std::get<1>(_XYZ) / sum,
+                               std::get<2>(_XYZ) / sum);
+    }
+
+
+private:
+    Colour::value_type _XYZ;
+};
+
+class ColourFunction
 {
 public:
     typedef std::tuple<double, double, double, double> value_type;
-    typedef std::tuple<double, double, double> colour_type; //TODO - create a class indicating the colour space
 
-    colourfunction(std::string filename)
+    ColourFunction(std::string filename)
         : _filename(filename) {};
 
     void read();
@@ -40,30 +69,24 @@ public:
         return _data.size() > 0 ? true : false;
     }
 
-    colourfunction::value_type const &operator[](std::size_t index) const
+    ColourFunction::value_type const &operator[](std::size_t index) const
     {
         return _data[index];
     }
 
-    colourfunction::value_type const get(double wavelength);
+    ColourFunction::value_type const get(double wavelength);
 
-    colourfunction::colour_type const get_colourXYZ(
-        const std::vector<std::tuple<double, double>> &input_vector);
-
-    colourfunction::colour_type const to_xyz(
-        const colourfunction::colour_type &colourXYZ);
-
-    colourfunction::colour_type const get_colour_xyz(
+    Colour const get_colour(
         const std::vector<std::tuple<double, double>> &input_vector);
 
 private:
 
-    colourfunction::value_type mean(double value,
-                                    colourfunction::value_type const &v1,
-                                    colourfunction::value_type const &v2);
+    ColourFunction::value_type mean(double value,
+                                    ColourFunction::value_type const &v1,
+                                    ColourFunction::value_type const &v2);
 
     std::string _filename;
-    std::vector<colourfunction::value_type> _data;
+    std::vector<ColourFunction::value_type> _data;
 };
 
 }

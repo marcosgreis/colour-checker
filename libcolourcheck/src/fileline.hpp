@@ -24,7 +24,7 @@
 
 namespace colourcheck
 {
-class fileline
+class Fileline
 {
 public:
     typedef std::vector<std::string> value_type;
@@ -39,7 +39,7 @@ public:
         return _data;
     }
 
-    fileline::value_type::size_type size() const
+    Fileline::value_type::size_type size() const
     {
         return _data.size();
     }
@@ -66,9 +66,9 @@ public:
         }
     }
 private:
-    fileline::value_type _data;
+    Fileline::value_type _data;
 };
-std::istream &operator>>(std::istream &instr, fileline &obj);
+std::istream &operator>>(std::istream &instr, Fileline &obj);
 
 }
 

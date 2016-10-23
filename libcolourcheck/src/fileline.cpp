@@ -23,7 +23,7 @@ using namespace std;
 namespace colourcheck
 {
 
-istream &operator>>(istream &instr, fileline &obj)
+istream &operator>>(istream &instr, Fileline &obj)
 {
     obj.read_next_line(instr);
     return instr;

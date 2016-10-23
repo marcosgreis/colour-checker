@@ -25,10 +25,10 @@ namespace colourcheck
 {
 
 template <typename T>
-class filter
+class Filter
 {
 public:
-    filter() {};
+    Filter() {};
     void add_measure(T v)
     {
         _data.emplace_back(v);
@@ -49,7 +49,7 @@ public:
 
     virtual T get_value() = 0;
 
-    filter<T> &operator<<(T v)
+    Filter<T> &operator<<(T v)
     {
         add_measure(v);
         return *this;
@@ -61,10 +61,10 @@ private:
 };
 
 template <typename T>
-class avgfilter : public filter<T>
+class AverageFilter : public Filter<T>
 {
 public:
-    avgfilter() {};
+    AverageFilter() {};
 
     virtual T get_value()
     {

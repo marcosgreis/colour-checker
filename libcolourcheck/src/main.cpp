@@ -28,7 +28,7 @@ using namespace std;
 using namespace colourcheck;
 namespace po = boost::program_options;
 
-int calculate_data(colourfunction &cf, spectrometer &s, const string &output);
+int calculate_data(ColourFunction &cf, Spectrometer &s, const string &output);
 
 int main(int argc, char **argv)
 {
@@ -56,13 +56,13 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        spectrometer s(vm["wavelength"].as<string>(), vm["intensity"].as<string>());
-        colourfunction cf(vm["ciexyz"].as<string>());
+        Spectrometer s(vm["wavelength"].as<string>(), vm["intensity"].as<string>());
+        ColourFunction cf(vm["ciexyz"].as<string>());
         s.parse_data();
         cf.read();
 
         if (!s.is_ready()) {
-            cout << "Error reading spectrometer files!" << endl;
+            cout << "Error reading Spectrometer files!" << endl;
             return 1;
         }
 
@@ -124,10 +124,10 @@ private:
     bool _comma;
 };
 
-int calculate_data(colourfunction &cf, spectrometer &s, const string &output)
+int calculate_data(ColourFunction &cf, Spectrometer &s, const string &output)
 {
-    avgfilter<double> x_filter;
-    avgfilter<double> y_filter;
+    AverageFilter<double> x_filter;
+    AverageFilter<double> y_filter;
     csvoutput out(output);
     if (!out.is_open()) {
         cout << "Could not open output file!" << endl;
@@ -147,7 +147,7 @@ int calculate_data(colourfunction &cf, spectrometer &s, const string &output)
             index++;
         }
 
-        auto v = cf.get_colour_xyz(data);
+        auto v = cf.get_colour(data).getxyz();
 
         x_filter << get<0>(v);
         out.new_cell(get<0>(v));

@@ -25,10 +25,10 @@ using namespace std;
 namespace colourcheck
 {
 
-void colourfunction::read()
+void ColourFunction::read()
 {
     ifstream file(_filename);
-    fileline line;
+    Fileline line;
 
     while (file >> line) {
         if (line.size() > 3) {
@@ -41,9 +41,9 @@ void colourfunction::read()
     }
 }
 
-colourfunction::value_type colourfunction::mean(double value,
-        colourfunction::value_type const &v1,
-        colourfunction::value_type const &v2)
+ColourFunction::value_type ColourFunction::mean(double value,
+        ColourFunction::value_type const &v1,
+        ColourFunction::value_type const &v2)
 {
     double factor = (value - std::get<0>(v1)) / (std::get<0>(v2) - std::get<0>(v1));
 
@@ -57,7 +57,7 @@ colourfunction::value_type colourfunction::mean(double value,
                       adjust(std::get<3>(v1), std::get<3>(v2)));
 }
 
-colourfunction::value_type const colourfunction::get(double wavelength)
+ColourFunction::value_type const ColourFunction::get(double wavelength)
 {
     double last_value;
     last_value = std::get<0>(*_data.begin());
@@ -77,10 +77,10 @@ colourfunction::value_type const colourfunction::get(double wavelength)
     return make_tuple(0.0, 0.0, 0.0, 0.0);
 }
 
-colourfunction::colour_type const colourfunction::get_colourXYZ(
+Colour const ColourFunction::get_colour(
     const vector<tuple<double, double>> &input_vector)
 {
-    colourfunction::colour_type output = make_tuple(0.0, 0.0, 0.0);
+    Colour::value_type output = make_tuple(0.0, 0.0, 0.0);
 
     for (auto input : input_vector) {
         double wavelength = std::get<0>(input);
@@ -93,28 +93,7 @@ colourfunction::colour_type const colourfunction::get_colourXYZ(
         std::get<2>(output) += std::get<3>(v) * intensity;
     }
 
-    return output;
+    return Colour(output);
 }
-
-colourfunction::colour_type const colourfunction::to_xyz(
-    const colourfunction::colour_type &colourXYZ)
-{
-    double sum = std::get<0>(colourXYZ) +
-                 std::get<1>(colourXYZ) +
-                 std::get<2>(colourXYZ);
-
-    return make_tuple(std::get<0>(colourXYZ) / sum,
-                      std::get<1>(colourXYZ) / sum,
-                      std::get<2>(colourXYZ) / sum);
-}
-
-
-colourfunction::colour_type const colourfunction::get_colour_xyz(
-    const std::vector<std::tuple<double, double>> &input_vector)
-{
-    return to_xyz(get_colourXYZ(input_vector));
-}
-
-
 
 }

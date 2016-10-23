@@ -27,7 +27,7 @@ using namespace colourcheck;
 
 BOOST_AUTO_TEST_CASE(one_sample)
 {
-    avgfilter<double> f;
+    AverageFilter<double> f;
     f.add_measure(10.0);
 
     REQUIRE_CLOSE(10.0, f.get_value());
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(one_sample)
 
 BOOST_AUTO_TEST_CASE(two_samples)
 {
-    avgfilter<double> f;
+    AverageFilter<double> f;
     f.add_measure(10.0);
     f.add_measure(20.2);
 
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(two_samples)
 
 BOOST_AUTO_TEST_CASE(many_samples)
 {
-    avgfilter<double> f;
+    AverageFilter<double> f;
     f << 10.0;
     f << 20.0;
     f << 30.9;
@@ -54,8 +54,8 @@ BOOST_AUTO_TEST_CASE(many_samples)
 
 BOOST_AUTO_TEST_CASE(many_samples_base)
 {
-    avgfilter<double> avg;
-    filter<double> *f = &avg;
+    AverageFilter<double> avg;
+    Filter<double> *f = &avg;
     *f << 7.0;
     *f << 20.0;
     *f << 30.9;

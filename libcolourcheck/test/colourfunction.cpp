@@ -48,7 +48,7 @@ public:
     {
         remove("sample.csv");
     }
-    colourfunction cf;
+    ColourFunction cf;
 };
 
 class ColourFcnTestComment : public ColourFcnTest
@@ -80,7 +80,7 @@ typedef boost::mpl::vector<ColourFcnTest, ColourFcnTestComment> Fixtures;
 
 BOOST_FIXTURE_TEST_CASE_TEMPLATE(read_file, T, Fixtures, T)
 {
-    colourfunction::value_type v;
+    ColourFunction::value_type v;
 
     v = T::cf[0];
     REQUIRE_CLOSE(430.0, get<0>(v));
@@ -103,7 +103,7 @@ BOOST_FIXTURE_TEST_CASE_TEMPLATE(read_file, T, Fixtures, T)
 
 BOOST_FIXTURE_TEST_CASE(get_exact_wavelength, ColourFcnTest)
 {
-    colourfunction::value_type v;
+    ColourFunction::value_type v;
 
     v = cf.get(430.0);
     REQUIRE_CLOSE(430.0, get<0>(v));
@@ -126,7 +126,7 @@ BOOST_FIXTURE_TEST_CASE(get_exact_wavelength, ColourFcnTest)
 
 BOOST_FIXTURE_TEST_CASE(build_new_wavelength_middle, ColourFcnTest)
 {
-    colourfunction::value_type v;
+    ColourFunction::value_type v;
 
     v = cf.get(432.5);
     REQUIRE_CLOSE(432.5, get<0>(v));
@@ -149,7 +149,7 @@ BOOST_FIXTURE_TEST_CASE(build_new_wavelength_middle, ColourFcnTest)
 
 BOOST_FIXTURE_TEST_CASE(build_new_wavelength_any, ColourFcnTest)
 {
-    colourfunction::value_type v;
+    ColourFunction::value_type v;
 
     v = cf.get(431.25);
     REQUIRE_CLOSE(431.25, get<0>(v));
@@ -172,7 +172,7 @@ BOOST_FIXTURE_TEST_CASE(build_new_wavelength_any, ColourFcnTest)
 
 BOOST_FIXTURE_TEST_CASE(check_boundaries, ColourFcnTest)
 {
-    colourfunction::value_type v;
+    ColourFunction::value_type v;
 
     v = cf.get(0.0);
     REQUIRE_CLOSE(0.0, get<0>(v));
@@ -192,7 +192,7 @@ BOOST_FIXTURE_TEST_CASE(single_wave, ColourFcnTest)
     vector<tuple<double, double>> input;
     input.push_back(make_tuple(430.0, 1.0));
 
-    auto v = cf.get_colourXYZ(input);
+    auto v = cf.get_colour(input).getXYZ();
     REQUIRE_CLOSE(0.10, get<0>(v));
     REQUIRE_CLOSE(0.20, get<1>(v));
     REQUIRE_CLOSE(0.30, get<2>(v));
@@ -205,7 +205,7 @@ BOOST_FIXTURE_TEST_CASE(known_waves, ColourFcnTest)
     input.push_back(make_tuple(435.0, 1.0));
     input.push_back(make_tuple(440.0, 1.0));
 
-    auto v = cf.get_colourXYZ(input);
+    auto v = cf.get_colour(input).getXYZ();
     REQUIRE_CLOSE(0.70, get<0>(v));
     REQUIRE_CLOSE(0.76, get<1>(v));
     REQUIRE_CLOSE(3.30, get<2>(v));
@@ -218,7 +218,7 @@ BOOST_FIXTURE_TEST_CASE(waves_mixed, ColourFcnTest)
     input.push_back(make_tuple(432.5, 0.2));
     input.push_back(make_tuple(440.0, 0.9));
 
-    auto v = cf.get_colourXYZ(input);
+    auto v = cf.get_colour(input).getXYZ();
     REQUIRE_CLOSE(0.440, get<0>(v));
     REQUIRE_CLOSE(0.304, get<1>(v));
     REQUIRE_CLOSE(2.400, get<2>(v));
@@ -226,9 +226,9 @@ BOOST_FIXTURE_TEST_CASE(waves_mixed, ColourFcnTest)
 
 BOOST_FIXTURE_TEST_CASE(from_XYZ_to_xyz, ColourFcnTest)
 {
-    colourfunction::colour_type input = make_tuple(2.0, 4.0, 10.0);
+    Colour c(make_tuple(2.0, 4.0, 10.0));
 
-    auto v = cf.to_xyz(input);
+    auto v = c.getxyz();
     REQUIRE_CLOSE(0.125, get<0>(v));
     REQUIRE_CLOSE(0.250, get<1>(v));
     REQUIRE_CLOSE(0.625, get<2>(v));
@@ -241,7 +241,7 @@ BOOST_FIXTURE_TEST_CASE(get_xyz, ColourFcnTest)
     input.push_back(make_tuple(432.5, 0.2));
     input.push_back(make_tuple(440.0, 0.9));
 
-    auto v = cf.get_colour_xyz(input);
+    auto v = cf.get_colour(input).getxyz();
     REQUIRE_CLOSE(0.1399491, get<0>(v));
     REQUIRE_CLOSE(0.0966921, get<1>(v));
     REQUIRE_CLOSE(0.7633587, get<2>(v));

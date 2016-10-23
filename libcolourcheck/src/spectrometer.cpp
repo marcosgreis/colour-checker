@@ -24,11 +24,11 @@ using namespace std;
 namespace colourcheck
 {
 
-void spectrometer::parse_data()
+void Spectrometer::parse_data()
 {
     ifstream wave_file(_wavelength_file);
 
-    fileline line;
+    Fileline line;
     while (wave_file >> line) {
         if (line.size() > 1) {
             _wave_data.push_back(stod(line[1]));
