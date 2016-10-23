@@ -1,0 +1,26 @@
+This is a project to solve the VanHackathon challenge from Thalmic Labs.
+
+Requirements:
+* CMake 3.0
+* Boost C++ Libraries 1.54 (program_options and unit_test_framework)
+
+
+
+The activities needed to complete this task are:
+
+Act#0: Create basic structure
+Act#1: Read input files
+Act#2: Parse data
+Act#3: Create colour matching function
+Act#4: Calculate light colour
+Act#10: Command-line tool
+Act#11: Add a filter to remove noise from the measurement data
+Act#8: Determine light stability
+
+During the development, I was told that the GUI was not neccessary.
+Therefore, these activities do not apply:
+-- Act#5: Create GUI
+-- Act#6: Integrate with libcolourcheck
+-- Act#7: Show data
+-- Act#9: Show stability in GUI
+

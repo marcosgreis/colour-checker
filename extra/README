@@ -1,0 +1,15 @@
+├── a
+│   ├── intensities.csv
+│   └── wavelengths.csv
+├── b
+│   ├── intensities.csv
+│   └── wavelengths.csv
+├── c
+│   ├── intensities.csv
+│   └── wavelengths.csv
+├── ciexyz31_1.csv
+└── ciexyz31.csv
+
+The files under folders 'a', 'b' and 'c' are inputs provided by the Thalmic Labs to complete the C++ Challenge at VanHackathon.
+
+The 'ciexyz31_1.csv' and 'ciexyz31.csv' files were download from: http://cvrl.ioo.ucl.ac.uk/cmfs.htm
