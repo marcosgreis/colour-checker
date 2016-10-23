@@ -13,8 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+find_package(Boost COMPONENTS program_options REQUIRED)
+include_directories( ${Boost_INCLUDE_DIR} )
+
 add_library(colourcheck
             fileline.cpp
             spectrometer.cpp
             colourfunction.cpp
            )
+
+add_executable(cmdline-checker main.cpp)
+target_link_libraries(cmdline-checker
+                      colourcheck ${Boost_LIBRARIES})
