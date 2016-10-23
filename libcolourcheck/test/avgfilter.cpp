@@ -63,3 +63,20 @@ BOOST_AUTO_TEST_CASE(many_samples_base)
     REQUIRE_CLOSE(19.3, f->get_value());
 }
 
+BOOST_AUTO_TEST_CASE(standard_deviation)
+{
+    AverageFilter<double> f;
+    f << 2;
+    f << 4;
+    f << 4;
+    f << 4;
+    f << 5;
+    f << 5;
+    f << 7;
+    f << 9;
+
+    REQUIRE_CLOSE(5.0, f.get_value());
+    REQUIRE_CLOSE(2.0, f.get_standard_deviation());
+}
+
+

@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <cmath>
 
 namespace colourcheck
 {
@@ -73,6 +74,16 @@ public:
             sum += n;
         });
         return sum / ((T) this->size());
+    }
+
+    T get_standard_deviation()
+    {
+        T avg = get_value();
+        T sum = 0;
+        std::for_each(this->begin(), this->end(), [&sum, avg](T n) {
+            sum += (n - avg) * (n - avg);
+        });
+        return std::sqrt(sum / ((T) this->size()));
     }
 };
 

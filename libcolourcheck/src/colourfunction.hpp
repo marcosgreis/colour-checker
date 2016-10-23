@@ -50,6 +50,16 @@ public:
                                std::get<2>(_XYZ) / sum);
     }
 
+    const Colour::value_type getuv() const
+    {
+        double sum = std::get<0>(_XYZ) +
+                     std::get<1>(_XYZ) * 15 +
+                     std::get<2>(_XYZ) * 3;
+
+        return std::make_tuple(std::get<0>(_XYZ) * 4 / sum,
+                               std::get<1>(_XYZ) * 9 / sum,
+                               0.0);
+    }
 
 private:
     Colour::value_type _XYZ;

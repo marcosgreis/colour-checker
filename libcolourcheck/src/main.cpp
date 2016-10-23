@@ -28,7 +28,7 @@ using namespace std;
 using namespace colourcheck;
 namespace po = boost::program_options;
 
-int calculate_data(ColourFunction &cf, Spectrometer &s, const string &output);
+int calculate_data(ColourFunction &cf, Spectrometer &s, const string &output, int timestamp);
 
 int main(int argc, char **argv)
 {
@@ -42,7 +42,8 @@ int main(int argc, char **argv)
         ("wavelength,w", po::value<string>(), "Wavelengths input file")
         ("intensity,i", po::value<string>(), "Intensities input file")
         ("ciexyz,c", po::value<string>(), "Colour matching functions input file")
-        ("output,o", po::value<string>()->default_value("output.csv"), "Output file");
+        ("output,o", po::value<string>()->default_value("output.csv"), "Output file")
+        ("timestamp,t", po::value<int>()->default_value(0), "Output each timestamp in file");
 
         po::options_description desc("Allowed options");
         desc.add(generic).add(config);
@@ -71,7 +72,7 @@ int main(int argc, char **argv)
             return 1;
         }
 
-        if (calculate_data(cf, s, vm["output"].as<string>()) != 0) {
+        if (calculate_data(cf, s, vm["output"].as<string>(), vm["timestamp"].as<int>()) != 0) {
             return 1;
         }
     }
@@ -124,22 +125,24 @@ private:
     bool _comma;
 };
 
-int calculate_data(ColourFunction &cf, Spectrometer &s, const string &output)
+int calculate_data(ColourFunction &cf, Spectrometer &s, const string &output, int timestamp)
 {
     AverageFilter<double> x_filter;
     AverageFilter<double> y_filter;
+    AverageFilter<double> uv_filter;
     csvoutput out(output);
     if (!out.is_open()) {
         cout << "Could not open output file!" << endl;
         return 1;
     }
 
-    out.create_header("Timestamp,x,y");
+    if (timestamp) {
+        out.create_header("Timestamp,x,y");
+    }
 
     int temp_aux = 1;
     for (auto it = s.begin(); it != s.end(); ++it) {
         vector<tuple<double, double>> data;
-        out.new_cell(temp_aux++);
 
         size_t index = 0;
         for (auto intensity : *it) {
@@ -147,18 +150,28 @@ int calculate_data(ColourFunction &cf, Spectrometer &s, const string &output)
             index++;
         }
 
-        auto v = cf.get_colour(data).getxyz();
+        Colour colour = cf.get_colour(data);
+        auto xyz = colour.getxyz();
 
-        x_filter << get<0>(v);
-        out.new_cell(get<0>(v));
-        y_filter << get<1>(v);
-        out.new_cell(get<1>(v));
-        out.new_line();
+        x_filter << get<0>(xyz);
+        y_filter << get<1>(xyz);
+
+        if (timestamp) {
+            out.new_cell(temp_aux++);
+            out.new_cell(get<0>(xyz));
+            out.new_cell(get<1>(xyz));
+            out.new_line();
+        }
+
+        auto uv = colour.getuv();
+        uv_filter << get<0>(uv) * get<1>(uv);
     }
 
-    out.create_header("Final_x,Final_y");
+    out.create_header("Average x,Average y,SDCM");
     out.new_cell(x_filter.get_value());
     out.new_cell(y_filter.get_value());
+    out.new_cell(uv_filter.get_standard_deviation());
+    
     out.new_line();
 
     return 0;
